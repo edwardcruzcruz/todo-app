@@ -1,20 +1,9 @@
-import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useLogin } from "../hooks/useLogin";
 
 const LoginPage = () => {
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [passwordType, setPasswordType] = useState<"text" | "password">('password')
-    const handlePasswordType = () => {
-        if(passwordType === "text")
-            setPasswordType("password")
-        else
-            setPasswordType("text")
-    };
-    const handleLogin = () => {
-        console.log("login....")
-    };
+    const {email, password, passwordType, setEmail, setPassword, handleLogin, handlePasswordType} = useLogin();
     return (
         <div className="container">
             <div className="card">
