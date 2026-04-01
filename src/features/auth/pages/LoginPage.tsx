@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 
 const LoginPage = () => {
-    const {email, password, passwordType, setEmail, setPassword, handleLogin, handlePasswordType} = useLogin();
+    const {email, password, passwordType, validationErrors, setEmail, setPassword, handleLogin, handlePasswordType} = useLogin();
     return (
         <div className="container">
             <div className="card">
@@ -28,22 +28,34 @@ const LoginPage = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
+                        <span
+                            className="error"
+                        >
+                            { validationErrors.email || "" }
+                        </span>
                     </div>    
                     <div className="formGroup">
-                        <input 
-                            className="password"
-                            name="password"
-                            type={passwordType}
-                            placeholder="Contraseña"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+                        <div className="formGroupPassword">
+                            <input 
+                                className="password"
+                                name="password"
+                                type={passwordType}
+                                placeholder="Contraseña"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <span
+                                className="passwordToogleIcon"
+                                onClick={handlePasswordType}
+                            >
+                                {passwordType === "text" ? <FaEye /> : <FaEyeSlash />}   
+                            </span>
+                        </div>
                         <span
-                            className="passwordToogleIcon"
-                            onClick={handlePasswordType}
+                            className="error"
                         >
-                            {passwordType === "text" ? <FaEye /> : <FaEyeSlash />}   
+                            { validationErrors.password || "" }
                         </span>
                     </div>    
                     <button type="submit" className="button">
