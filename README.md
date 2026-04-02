@@ -1,75 +1,106 @@
-# React + TypeScript + Vite
+# 💻 ToDo Frontend (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**ToDo Client** es la interfaz de usuario moderna para la gestión de tareas de la plataforma Ecotec.
+Esta aplicación ha sido construida bajo una **Arquitectura Basada en Features**, permitiendo una separación clara entre la lógica de autenticación, la gestión de tareas y el estado global.
 
-Currently, two official plugins are available:
+## 🛠 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Framework: React 19 + Vite
 
-## React Compiler
+- Lenguaje: TypeScript
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- Gestión de Estado: Redux Toolkit (RTK)
 
-Note: This will impact Vite dev & build performances.
+- Cliente API: Axios (con interceptores para JWT)
 
-## Expanding the ESLint configuration
+- Enrutado: React Router Dom v7
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Validación: Yup
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🧱 Arquitectura del Proyecto
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+El frontend utiliza una organización por Features, lo que facilita el mantenimiento y la escalabilidad:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **API:** Configuración centralizada de Axios y servicios compartidos.
+
+- **Features:** Módulos encapsulados (Auth, Tasks) que contienen sus propios hooks, páginas y lógica de estado.
+
+- **Store:** Configuración central de Redux, combinando los slices de cada funcionalidad.
+
+- **Shared:** Componentes reutilizables (Spinners, Errores) y utilidades globales.
+
+- **Routes:** Gestión de navegación y guardias de seguridad (ProtectedRoute).
+
+### 📁 Estructura de Carpetas
+
+```bash
+src/
+ ├── api/                   # Configuración de Axios (interceptores 401)
+ ├── features/              # Módulos por dominio
+ │    ├── auth/             # Login, Registro, Hooks (useLogin)
+ │    │    ├── apis/        # Llamadas a APIs auth (login, register)
+ │    │    ├── hooks/       # useLogin, useRegister
+ │    │    ├── interfaces/  # Response & request types
+ │    │    ├── pages/       # LoginPage, RegisterPage
+ │    │    ├── states/      # Redux slice(s) para autenticación   
+ │    │    └── validations/ # Esquemas de validación de formularios
+ │    └── tasks/            # Gestión de tareas y páginas
+ ├── routes/                # Definición de rutas y ProtectedRoute.tsx
+ ├── shared/                # Componentes comunes (Spinner, SharedError)
+ ├── store/                 # Redux Store global y Hooks (useAppDispatch)
+ └── main.tsx               # Punto de entrada y Provider
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 🔒 Seguridad y Flujo de Auth
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+La aplicación implementa un flujo de seguridad robusto:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Interceptor de Petición: Adjunta automáticamente el Bearer Token desde el localStorage.
+
+2. Interceptor de Respuesta: Detecta errores 401 (Unauthorized), limpia la sesión y redirige al usuario al /login.
+
+3. Rutas Protegidas: Los usuarios no autenticados no pueden acceder a /tasks ni a rutas internas del sistema.
+
+### ⚙️ Instalación y Uso
+
+1. Clonar el repositorio
+
+```Bash
+git clone <tu-repositorio-url>
+cd frontend
 ```
+
+2. Instalar dependencias
+
+```Bash
+npm install
+```
+
+3. Configurar variables de entorno
+
+Crea un archivo .env en la raíz (puedes basarte en .env.example):
+
+Fragmento de código
+```
+# URL base de tu backend de Fastify
+VITE_TODO_BASE_URL="http://localhost:3000"
+```
+
+4. Correr en modo desarrollo
+
+```Bash
+npm run dev
+```
+La aplicación estará disponible en http://localhost:5173.
+
+### 🧪 Scripts Disponibles
+```npm run dev:``` Inicia el servidor de desarrollo con Hot Module Replacement (HMR).
+
+```npm run build:``` Compila la aplicación para producción.
+
+```npm run preview:``` Previsualiza localmente la versión de producción.
+
+### 📌 Autor
+**Edward Cruz** 
+
+Software Developer - Frontend focused on Scalable Architecture.
