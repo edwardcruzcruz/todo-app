@@ -1,0 +1,56 @@
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
+interface Props {
+    classNameFormGroup: string;
+    classNameInput: string;
+    classNameError: string;
+    name: string;
+    type: string;
+    placeholder: string;
+    value: string;
+    HandleChange: (e: any) => void;
+    validationError?: string;
+    isRequired: boolean;
+
+    //password
+    isPasswordType?: boolean;
+    classNamePasswordToogleIcon?: string;
+    passwordType?: "text" | "password";
+    HandlePasswordType?: () => void;
+
+}
+export const CustomInput = ({classNameFormGroup,classNameInput,classNameError,name,type,placeholder,value,HandleChange,isRequired = false,validationError, isPasswordType = false,passwordType,classNamePasswordToogleIcon,HandlePasswordType}:Props) => {
+    return (
+        <>
+            <div className={classNameFormGroup}>
+                <input
+                    className={classNameInput}
+                    name={name}
+                    type={isPasswordType ? passwordType : type}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={HandleChange}
+                    required={isRequired}
+                />
+                {isPasswordType && (
+                    <span
+                        className={classNamePasswordToogleIcon}
+                        onClick={HandlePasswordType} 
+                    >
+                        {passwordType === 'text' ?<FaEye/>:<FaEyeSlash/>}
+                    </span>
+                )}
+                {!isPasswordType &&(
+                    <p className={classNameError}>
+                        {validationError || ''}
+                    </p>
+                )}
+            </div>
+            {isPasswordType &&(
+                <p className={classNameError}>
+                    {validationError || ''}
+                </p>
+            )}
+        </>
+    )
+}
