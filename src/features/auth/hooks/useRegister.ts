@@ -5,12 +5,14 @@ import { ValidationError } from "yup";
 
 export const useRegister = () => {
     const navigate = useNavigate();
+    const [name, setName] = useState<string>('')
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('')
     const [passwordType, setPasswordType] = useState<"text" | "password">('password')
     const [confirmPasswordType, setConfirmPasswordType] = useState<"text" | "password">('password')
     const [validationErrors, setValidationErrors] = useState<{
+        name?: string,
         email?: string,
         password?: string,
         confirmPassword?: string
@@ -31,15 +33,15 @@ export const useRegister = () => {
         setValidationErrors({});
         try{
             await registerSchema.validate(
-                { email, password, confirmPassword },
+                { name, email, password, confirmPassword },
                 { abortEarly: false }
             );
         } catch (error) {
             if( error instanceof ValidationError ){
-                const errors: { email?: string; password?: string; confirmPassword?: string } = {};
+                const errors: { name?: string; email?: string; password?: string; confirmPassword?: string } = {};
                 error.inner.forEach((e) => {
                     if( e.path ){
-                        errors[ e.path as "email" | "password" | "confirmPassword" ] = e.message;
+                        errors[ e.path as "name" | "email" | "password" | "confirmPassword" ] = e.message;
                     }
                 });
                 setValidationErrors(errors);
@@ -52,12 +54,14 @@ export const useRegister = () => {
         navigate("/login", { replace: true });
     };
     return {
+        name,
         email,
         password,
         confirmPassword,
         passwordType,
         confirmPasswordType,
         validationErrors,
+        setName,
         setEmail,
         setPassword,
         setConfirmPassword,

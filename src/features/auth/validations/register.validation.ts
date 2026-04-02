@@ -1,5 +1,8 @@
 import * as yup from 'yup';
 export const registerSchema = yup.object({
+    name: yup
+        .string()
+        .required("El nombre es requerido"),
     email: yup
         .string()
         .required("El correo es requerido")

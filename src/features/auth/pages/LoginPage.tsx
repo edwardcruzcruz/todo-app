@@ -1,6 +1,6 @@
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
+import AuthForm from "../components/AuthForm";
 
 const LoginPage = () => {
     const {email, password, passwordType, validationErrors, setEmail, setPassword, handleLogin, handlePasswordType} = useLogin();
@@ -12,56 +12,41 @@ const LoginPage = () => {
                     No tienes cuante todavía?{" "}
                     <Link to="/register">Regístrate aquí</Link>
                 </p>
-                <form className="form"
-                    onSubmit={(e)=>{
-                        e.preventDefault();
-                        handleLogin();
-                    }}
-                >
-                    <div className="formGroup">
-                        <input 
-                            className="email"
-                            name="email"
-                            type="email"
-                            placeholder="Correo"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        <span
-                            className="error"
-                        >
-                            { validationErrors.email || "" }
-                        </span>
-                    </div>    
-                    <div className="formGroup">
-                        <div className="formGroupPassword">
-                            <input 
-                                className="password"
-                                name="password"
-                                type={passwordType}
-                                placeholder="Contraseña"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                            <span
-                                className="passwordToogleIcon"
-                                onClick={handlePasswordType}
-                            >
-                                {passwordType === "text" ? <FaEye /> : <FaEyeSlash />}   
-                            </span>
-                        </div>
-                        <span
-                            className="error"
-                        >
-                            { validationErrors.password || "" }
-                        </span>
-                    </div>    
-                    <button type="submit" className="button">
-                        Iniciar Sesión
-                    </button>
-                </form>
+                <AuthForm 
+                    classNameForm="form"
+                    classNameFormGroup="formGroup"
+                    classNamePasswordInputContainer="formGroupPassword"
+                    classNameInput="input"
+                    classNameError="error"
+                    classNameButton="button"
+                    buttonName="Ingresar"
+                    handleOnSubmit={handleLogin}
+                    //fields
+                    fields={[
+                        {
+                            name: 'email',
+                            type: 'email',
+                            placeholder: 'Correo',
+                            value:email,
+                            handleChange:(e) => setEmail(e.target.value),
+                            validationError:validationErrors.email,
+                            isRequired:true,
+                        },
+                        {
+                            name: 'password',
+                            type: passwordType,
+                            placeholder: 'Contraseña',
+                            value:password,
+                            handleChange:(e) => setPassword(e.target.value),
+                            validationError:validationErrors.password,
+                            isRequired:true,
+                            isPasswordType:true,
+                            classNamePasswordToogleIcon:"passwordToogleIcon",
+                            passwordType:passwordType,
+                            handlePasswordType:handlePasswordType
+                        }
+                    ]}
+                />
             </div>
         </div>
     )
