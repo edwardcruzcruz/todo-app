@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerSchema } from "../validations/register.validation";
 import { ValidationError } from "yup";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { registerThunk } from "../states/register.slice";
 
 export const useRegister = () => {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const { success, loading, error } = useAppSelector(
+        (state) => state.register
+    )
     const [name, setName] = useState<string>('')
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -48,8 +54,13 @@ export const useRegister = () => {
             }
             return;
         }
-        console.log("register....")
+        dispatch(registerThunk({email,password,name}));
     };
+    useEffect(() => {
+        if( success ){
+            handleBack()
+        }
+    }, [success])
     const handleBack = () => {
         navigate("/login", { replace: true });
     };
@@ -60,6 +71,8 @@ export const useRegister = () => {
         confirmPassword,
         passwordType,
         confirmPasswordType,
+        loading,
+        error,
         validationErrors,
         setName,
         setEmail,

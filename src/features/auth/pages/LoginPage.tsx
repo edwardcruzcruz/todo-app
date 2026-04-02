@@ -1,13 +1,19 @@
 import { Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 import AuthForm from "../components/AuthForm";
+import SharedError from "../../../shared/components/SharedError";
 
 const LoginPage = () => {
-    const {email, password, passwordType, validationErrors, setEmail, setPassword, handleLogin, handlePasswordType} = useLogin();
+    const {email, password, passwordType, loading, error, validationErrors, setEmail, setPassword, handleLogin, handlePasswordType} = useLogin();
     return (
         <div className="container">
             <div className="card">
                 <h3>Inicio de Sesión</h3>
+                {error && (<SharedError 
+                    variant='inline'
+                    message={error}
+                    //onRetry={handleLogin}
+                />)}
                 <p>
                     No tienes cuante todavía?{" "}
                     <Link to="/register">Regístrate aquí</Link>
@@ -19,6 +25,7 @@ const LoginPage = () => {
                     classNameInput="input"
                     classNameError="error"
                     classNameButton="button"
+                    loading={loading}
                     buttonName="Ingresar"
                     handleOnSubmit={handleLogin}
                     //fields

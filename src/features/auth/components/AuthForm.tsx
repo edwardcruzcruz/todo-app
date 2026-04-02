@@ -1,4 +1,5 @@
 import { CustomInput } from "../../../shared/components/CustomInput";
+import Spinner from "../../../shared/components/Spinner";
 
 interface inputField {
     name: string;
@@ -23,12 +24,13 @@ interface Props {
     classNameInput: string;
     classNameError: string;
     classNameButton: string;
+    loading: boolean;
     buttonName: string;
     //fields
     fields: inputField[]
 
 }
-const AuthForm = ({classNameForm, classNameFormGroup, classNamePasswordInputContainer, handleOnSubmit, classNameInput, classNameError, fields, classNameButton, buttonName}:Props) => {
+const AuthForm = ({classNameForm, classNameFormGroup, classNamePasswordInputContainer, handleOnSubmit, classNameInput, classNameError, fields, classNameButton,loading, buttonName}:Props) => {
   return (
     <form className={classNameForm}
         onSubmit={(e) => {
@@ -72,8 +74,8 @@ const AuthForm = ({classNameForm, classNameFormGroup, classNamePasswordInputCont
                 />
             </div>)
         )}
-        <button type="submit" className={classNameButton}>
-            {buttonName}
+        <button type="submit" className={classNameButton} disabled={loading}>
+            { loading ? <Spinner />: buttonName }
         </button>
     </form>
   )

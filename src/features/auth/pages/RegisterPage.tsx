@@ -1,6 +1,7 @@
 import { IoArrowBack } from "react-icons/io5";
 import { useRegister } from "../hooks/useRegister";
 import AuthForm from "../components/AuthForm";
+import SharedError from "../../../shared/components/SharedError";
 
 const RegisterPage = () => {
     const {
@@ -10,6 +11,8 @@ const RegisterPage = () => {
         confirmPassword,
         passwordType,
         confirmPasswordType,
+        loading,
+        error,
         validationErrors,
         setName,
         setEmail,
@@ -29,6 +32,13 @@ const RegisterPage = () => {
                     </button>
                 </div>               
                 <h3>Registro</h3>
+                { error && (
+                    <SharedError 
+                    variant="inline"
+                    //message={error}
+                    //onRetry={handleRegister}
+                    />
+                )}
                 <AuthForm 
                     classNameForm="form"
                     classNameFormGroup="formGroup"
@@ -36,6 +46,7 @@ const RegisterPage = () => {
                     classNameInput="input"
                     classNameError="error"
                     classNameButton="button"
+                    loading={loading}
                     buttonName="Registrar"
                     handleOnSubmit={handleRegister}
                     //fields

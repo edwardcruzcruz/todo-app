@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { loginSchema } from "../validations/login.validation";
 import { ValidationError } from "yup";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { loginThunk } from "../states/login.slice";
+import { useNavigate } from "react-router-dom";
 
 export const useLogin = () => {
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const { token, loading, error } = useAppSelector(
+        (state) => state.login
+    )
+
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [passwordType, setPasswordType] = useState<"text" | "password">('password')
@@ -35,12 +44,21 @@ export const useLogin = () => {
             }
             return;
         }
-        console.log("login....")
+        dispatch(loginThunk({email,password}));
     };
+
+    useEffect(() => {
+        if( token ){
+           navigate("/dashboard", { replace: true }) 
+        }
+    }, [token])
+
     return {
         email,
         password,
         passwordType,
+        loading,
+        error,
         validationErrors,
         setEmail,
         setPassword,
