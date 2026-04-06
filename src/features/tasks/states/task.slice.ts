@@ -1,18 +1,23 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { Task } from "../interfaces/task.interface";
 import { getAllTaskApi } from "../apis/get-tasks.api";
+import type { CreateTaskRequest } from "../interfaces/create-task.request";
+import { CreateTaskApi } from "../apis/create-task.api";
 
 interface TaskState {
     tasks: Task[];
     loading: boolean;
-    error: string | null;    
+    error: string | null;   
+    selectedTask?: Task; // Used for the Edit Modal
+    isModalOpen: boolean; 
 }
 
 const initialState: TaskState = {
     tasks: [],
     loading: false,
-    error: null
+    error: null,
+    isModalOpen: false
 }
 
 export const fetchTasks = createAsyncThunk<
@@ -41,10 +46,45 @@ export const fetchTasks = createAsyncThunk<
     }
 )
 
+export const createTask = createAsyncThunk<
+    Task,
+    CreateTaskRequest,
+    { rejectValue: string }
+>
+(
+    "createTask"
+    ,async (
+        { title, description, completed}: CreateTaskRequest,
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await CreateTaskApi(title, description, completed);
+            return response;
+        } catch (error) {
+            if( axios.isAxiosError(error) ) {
+                return rejectWithValue(
+                    error.response?.data?.error || "Algo salio mal"
+                );
+            } else {
+                return rejectWithValue("Algo salio mal");
+            }
+        }
+    }
+)
+
 const taskSlice = createSlice({
     name: "tasks",
     initialState,
-    reducers:{},
+    reducers:{
+        openModal: (state, action: PayloadAction<Task | null>) => {
+          state.isModalOpen = true;
+          state.selectedTask = action.payload ?? undefined; // null = Crear, task = Editar
+        },
+        closeModal: (state) => {
+          state.isModalOpen = false;
+          state.selectedTask = undefined;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchTasks.pending, (state) => {
@@ -58,8 +98,14 @@ const taskSlice = createSlice({
             .addCase(fetchTasks.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(createTask.fulfilled, (state, action) => {
+                state.tasks.unshift(action.payload);
+                state.isModalOpen = false;
+                state.selectedTask = undefined;
             });
     }
 })
 
+export const { openModal, closeModal } = taskSlice.actions;
 export const taskReducer = taskSlice.reducer;
