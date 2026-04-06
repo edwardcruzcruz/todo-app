@@ -1,7 +1,7 @@
 export interface Task {
     id:          string;
     title:       string;
-    description: null;
+    description: string | null;
     completed:   boolean;
     user_id:     string;
     created_at:  Date;
