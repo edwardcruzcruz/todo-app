@@ -1,6 +1,7 @@
 // src/features/tasks/components/TaskForm.tsx
 import { useForm } from "react-hook-form";
 import type { Task } from "../interfaces/task.interface";
+//import { useEffect } from "react";
 
 interface TaskFormProps {
   initialData?: Task; // If present, we are EDITING
@@ -9,9 +10,14 @@ interface TaskFormProps {
 }
 
 export const TaskForm = ({ initialData, onSubmit, onCancel }: TaskFormProps) => {
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit/*, reset*/ } = useForm({
     defaultValues: initialData || { title: "", description: "", completed: false }
   });
+
+  /*useEffect(() => {
+    console.log(initialData)
+    reset(initialData || { title: "", description: "", completed: false });
+  }, [initialData, reset]);*/
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="taskForm">

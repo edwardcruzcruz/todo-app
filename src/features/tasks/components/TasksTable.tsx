@@ -1,9 +1,12 @@
-import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { flexRender, getCoreRowModel, useReactTable, type CellContext } from "@tanstack/react-table";
 import type { Task } from "../interfaces/task.interface";
+import { useAppDispatch } from "../../../store/hooks";
+import { openModal } from "../states/task.slice";
 interface Props {
     data: Task[]
 }
 export const TasksTable = ({ data }:Props) => {
+    const dispatch = useAppDispatch();
     const columns = [
         {
             header: 'Id',
@@ -24,6 +27,25 @@ export const TasksTable = ({ data }:Props) => {
         {
             header: 'Completada',
             accessorKey: 'completed'
+        },
+        {
+            header: 'acciones',
+            cell: (info: CellContext<Task, any>) => (
+                <div className="actions">
+                    <button 
+                        onClick={() => dispatch(openModal(info.row.original))}
+                        className="modifiedAction"
+                    >
+                        Editar
+                    </button>
+                    <button 
+                        onClick={() => console.log("Delete ID:", info.row.original.id)}
+                        className="deletedAction"
+                    >
+                        Eliminar
+                    </button>
+                </div>
+            ),
         },
     ];
 

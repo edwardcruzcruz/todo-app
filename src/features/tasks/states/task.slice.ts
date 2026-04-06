@@ -4,6 +4,7 @@ import type { Task } from "../interfaces/task.interface";
 import { getAllTaskApi } from "../apis/get-tasks.api";
 import type { CreateTaskRequest } from "../interfaces/create-task.request";
 import { CreateTaskApi } from "../apis/create-task.api";
+import { UpdateTaskApi } from "../apis/update-task.api";
 
 interface TaskState {
     tasks: Task[];
@@ -72,6 +73,32 @@ export const createTask = createAsyncThunk<
     }
 )
 
+export const updateTask = createAsyncThunk<
+    Task,
+    CreateTaskRequest& { id: string },
+    { rejectValue: string }
+>
+(
+    "updateTask"
+    ,async (
+        { id, title, description, completed},
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await UpdateTaskApi(id, title, description, completed);
+            return response;
+        } catch (error) {
+            if( axios.isAxiosError(error) ) {
+                return rejectWithValue(
+                    error.response?.data?.error || "Algo salio mal"
+                );
+            } else {
+                return rejectWithValue("Algo salio mal");
+            }
+        }
+    }
+)
+
 const taskSlice = createSlice({
     name: "tasks",
     initialState,
@@ -101,6 +128,14 @@ const taskSlice = createSlice({
             })
             .addCase(createTask.fulfilled, (state, action) => {
                 state.tasks.unshift(action.payload);
+                state.isModalOpen = false;
+                state.selectedTask = undefined;
+            })
+            .addCase(updateTask.fulfilled, (state, action) => {
+                const index = state.tasks.findIndex(task => task.id === action.payload.id);
+                if (index !== -1) {
+                    state.tasks[index] = action.payload;
+                }
                 state.isModalOpen = false;
                 state.selectedTask = undefined;
             });

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { closeModal, createTask, fetchTasks, openModal } from "../states/task.slice";
+import { closeModal, createTask, fetchTasks, openModal, updateTask } from "../states/task.slice";
 import type { Task } from "../interfaces/task.interface";
 import type { CreateTaskRequest } from "../interfaces/create-task.request";
 
@@ -24,7 +24,7 @@ export const useTasksTable = () => {
 
     const handleSave = (data: CreateTaskRequest) => {
         if (selectedTask) {
-          // dispatch(updateTask({ id: selectedTask.id, ...data }));
+            dispatch(updateTask({ id: selectedTask.id, ...data }));
         } else {
             // Map the form data to the CreateTaskRequest structure
             dispatch(createTask({
