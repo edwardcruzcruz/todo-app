@@ -5,6 +5,7 @@ import { getAllTaskApi } from "../apis/get-tasks.api";
 import type { CreateTaskRequest } from "../interfaces/create-task.request";
 import { CreateTaskApi } from "../apis/create-task.api";
 import { UpdateTaskApi } from "../apis/update-task.api";
+import { DeleteTaskApi } from "../apis/delete-task.api";
 
 interface TaskState {
     tasks: Task[];
@@ -98,6 +99,31 @@ export const updateTask = createAsyncThunk<
         }
     }
 )
+export const deleteTask = createAsyncThunk<
+    Task,
+    { id: string },
+    { rejectValue: string }
+>
+(
+    "deleteTask"
+    ,async (
+        { id},
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await DeleteTaskApi(id);
+            return response;
+        } catch (error) {
+            if( axios.isAxiosError(error) ) {
+                return rejectWithValue(
+                    error.response?.data?.error || "Algo salio mal"
+                );
+            } else {
+                return rejectWithValue("Algo salio mal");
+            }
+        }
+    }
+)
 
 const taskSlice = createSlice({
     name: "tasks",
@@ -136,6 +162,12 @@ const taskSlice = createSlice({
                 if (index !== -1) {
                     state.tasks[index] = action.payload;
                 }
+                state.isModalOpen = false;
+                state.selectedTask = undefined;
+            })
+            .addCase(deleteTask.fulfilled, (state, action) => {
+                // actualizamos el listado de tareas sin incluir la tarea eliminada
+                state.tasks = state.tasks.filter(task => task.id !== action.payload.id);
                 state.isModalOpen = false;
                 state.selectedTask = undefined;
             });

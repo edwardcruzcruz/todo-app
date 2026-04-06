@@ -1,7 +1,7 @@
 import { flexRender, getCoreRowModel, useReactTable, type CellContext } from "@tanstack/react-table";
 import type { Task } from "../interfaces/task.interface";
 import { useAppDispatch } from "../../../store/hooks";
-import { openModal } from "../states/task.slice";
+import { deleteTask, openModal } from "../states/task.slice";
 interface Props {
     data: Task[]
 }
@@ -39,7 +39,7 @@ export const TasksTable = ({ data }:Props) => {
                         Editar
                     </button>
                     <button 
-                        onClick={() => console.log("Delete ID:", info.row.original.id)}
+                        onClick={() => dispatch(deleteTask({id: info.row.original.id}))}
                         className="deletedAction"
                     >
                         Eliminar

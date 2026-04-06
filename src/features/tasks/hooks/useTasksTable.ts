@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { closeModal, createTask, fetchTasks, openModal, updateTask } from "../states/task.slice";
-import type { Task } from "../interfaces/task.interface";
 import type { CreateTaskRequest } from "../interfaces/create-task.request";
 
 export const useTasksTable = () => {
@@ -11,7 +10,6 @@ export const useTasksTable = () => {
     );
 
     const handleOpenCreate = () => dispatch(openModal(null));
-    const handleOpenEdit = (task: Task) => dispatch(openModal(task));
     const handleCloseModal = () => dispatch(closeModal());
 
     useEffect(() => {
@@ -51,7 +49,6 @@ export const useTasksTable = () => {
         isModalOpen,
         selectedTask,
         handleOpenCreate,
-        handleOpenEdit,
         handleCloseModal,
         handleSave
     };
